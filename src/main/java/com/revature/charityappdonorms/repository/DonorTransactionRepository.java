@@ -22,6 +22,11 @@ public interface DonorTransactionRepository extends JpaRepository<Donor, Integer
 	@Query(" select count(*) from Donor d where d.requestId = ?1")
 	Long findByRequestid(int requestId);
 
+	
+	@Query(" select sum(amount) from Donor ")
+	Long findTotalAmount();
 
+	@Query(" select sum(amount) from Donor d where d.requestId = ?1")
+	Long findAmountByRequestId(int requestId);
 
 }
