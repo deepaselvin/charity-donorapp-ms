@@ -79,18 +79,63 @@ public class DonorTransactionService {
 		
 			} catch (ValidatorException e) {
 				
-				LOGGER.error("Exception:", e);
+				LOGGER.error("Validator Exception:", e);
 			}
 			 catch (Exception e) {
-					
-				 e.printStackTrace();
-					throw new ServiceException(MessageConstant.UNABLE_TO_TRANSACTION);
+				 
+			LOGGER.error("Exception:", e);
+			 throw new ServiceException(MessageConstant.UNABLE_TO_TRANSACTION);
 			 }			
 	
 			
 			return findByRequestid;
 	}
 	
+
+	/*
+	 * DONOR TOTAL AMOUNT [how much amount all donated by all donor's]
+	 * it returns the total amount contributed by donor's
+	 */
+
+	@Transactional
+	public Long donorTotalAmount() throws ServiceException {
+
+		Long findAmount=null;
+			try {
+				// insert method
+				findAmount = donorTransactionRepository.findTotalAmount();
+			} 
+			 catch (Exception e) {
+				 LOGGER.error("Exception:", e);
+				throw new ServiceException(MessageConstant.UNABLE_TO_TOTAL_AMOUNT);
+			 }			
+			return findAmount;
+	}
+	
+	/*
+	 * DONOR AOUNT BY REQUESTID [how much amount was contributed to a particular request id]
+	 * input was given as REQUESTID
+	 * it returns the amount donated to a particular of request Id
+	 */
+
+	@Transactional
+	public Long donorAmountById(int requestId) throws ServiceException {
+
+		Long findAmountByRequestid=null;
+			try {
+				
+				// insert method
+			 findAmountByRequestid = donorTransactionRepository.findAmountByRequestId(requestId);	
+			} 
+			 catch (Exception e) {
+					
+				 LOGGER.error("Exception:", e);
+				 throw new ServiceException(MessageConstant.UNABLE_TO_TOTAL_AMOUNT_BY_ID);
+			 }			
+			return findAmountByRequestid;
+	}
+	
+
 	
 	/*
 	 * LIST ALL  DONATION user can able to view who are all donated 
@@ -117,7 +162,7 @@ public class DonorTransactionService {
 	@Transactional
 	public List<Donor> myDonorTransList(int userId) throws ServiceException {
 		List<Donor> list = null;
-		list = donorTransactionRepository.findByDonor(userId);
+		list = donorTransactionRepository.findByDonorId(userId);
 
 		if (list.isEmpty()) {
 			throw new ServiceException(MessageConstant.MY_UNABLE_TO_LIST);
