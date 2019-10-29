@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -19,6 +20,7 @@ import com.revature.charityappdonorms.dto.Message;
 import com.revature.charityappdonorms.exception.ServiceException;
 import com.revature.charityappdonorms.model.Donor;
 import com.revature.charityappdonorms.service.DonorTransactionService;
+import com.revature.charityappdonorms.util.MessageConstant;
 
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -62,12 +64,45 @@ public class DonorTransactionController {
 	 * array of object
 	 */
 
-	@GetMapping()
+	@GetMapping("/AllDonation")
+	
 	@ResponseStatus(code = HttpStatus.OK)
-	public List<Donor> viewDonation() throws ServiceException {
-		List<Donor> donorObj = donorTransactionService.donorTransList();
-		System.out.println("list"+donorObj);
-		return donorObj;
+	public List<Donor> viewDonation() throws ServiceException  {
+		List<Donor> donorObj = null;
+		try {
+			donorObj = donorTransactionService.allDonorTransList();
+			System.out.println("Alllist"+donorObj);
+			return donorObj;
+		} catch (ServiceException e) {
+			LOGGER.error("Exception:", e);
+			throw new ServiceException(MessageConstant.ALL_UNABLE_TO_LIST);
+
+		}
+	
 	}
 
+	/*
+	 * It shows transaction details list so post mapping was used. it returns a
+	 * array of object
+	 */
+
+    @GetMapping("/MyDonation")
+	@ResponseStatus(code = HttpStatus.OK)
+    public ResponseEntity<?> subject(@RequestParam("userId") int userId){
+
+		List<Donor> donorObj;
+		try {
+			donorObj = donorTransactionService.myDonorTransList(userId);
+			System.out.println("list"+donorObj);
+			return new ResponseEntity<>(donorObj, HttpStatus.OK);
+		} catch (ServiceException e) {
+			LOGGER.error("Exception:", e);
+			Message message = new Message(e.getMessage());
+			return new ResponseEntity<>(message, HttpStatus.BAD_REQUEST);
+		}
+	
+		 
+	}
+
+	
 }
