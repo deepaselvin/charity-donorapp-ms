@@ -19,5 +19,9 @@ public interface DonorTransactionRepository extends JpaRepository<Donor, Integer
 	List<Donor> findByDonor(int userId);
 
 	
+	@Query(" select count(*) from Donor d where d.requestId = ?1")
+	Long findByRequestid(int requestId);
+
+
 
 }

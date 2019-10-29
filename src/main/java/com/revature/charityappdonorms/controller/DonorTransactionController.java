@@ -35,6 +35,32 @@ public class DonorTransactionController {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(DonorTransactionController.class);
 
+
+	/*
+	 * It shows the DONORCOUNT so get mapping was used.
+	 * 
+	 * @Requestparam input was given as object it returns a response
+	 */
+
+	@GetMapping("/DonationCount")
+	
+	@ApiOperation(value = "Donorcontribute API")
+	@ApiResponses(value = { @ApiResponse(code = 200, message = "Success", response = DonorDto.class),
+			@ApiResponse(code = 400, message = "Cannot able to Contribute ", response = Message.class) })
+
+	public ResponseEntity<?> donorCount(@RequestParam("requestId") int requestId) {
+		try {	
+			Long count=null;
+			count=donorTransactionService.donorCountService(requestId);
+			return new ResponseEntity<>(count, HttpStatus.OK);
+		} catch (ServiceException e) {
+			LOGGER.error("Exception:", e);
+			Message message = new Message(e.getMessage());
+			return new ResponseEntity<>(message, HttpStatus.BAD_REQUEST);
+		}
+	}
+
+	
 	/*
 	 * It includes transaction details so post mapping was used.
 	 * 

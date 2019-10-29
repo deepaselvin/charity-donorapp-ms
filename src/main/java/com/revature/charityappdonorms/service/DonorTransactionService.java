@@ -58,10 +58,40 @@ public class DonorTransactionService {
 			 catch (Exception e) {
 					
 					throw new ServiceException(MessageConstant.UNABLE_TO_TRANSACTION);
-			 }
-			
+			 }			
 	}
 
+	/*
+	 * DONOR COUNT [how are all donated to a request]
+	 * input was given as REQUESTID
+	 * it returns the count of donor's
+	 */
+
+	@Transactional
+	public Long donorCountService(int requestId) throws ServiceException {
+
+		Long findByRequestid=null;
+			try {
+				donorValidator.countValidator(requestId);
+				
+				// insert method
+			 findByRequestid = donorTransactionRepository.findByRequestid(requestId);
+		
+			} catch (ValidatorException e) {
+				
+				LOGGER.error("Exception:", e);
+			}
+			 catch (Exception e) {
+					
+				 e.printStackTrace();
+					throw new ServiceException(MessageConstant.UNABLE_TO_TRANSACTION);
+			 }			
+	
+			
+			return findByRequestid;
+	}
+	
+	
 	/*
 	 * LIST ALL  DONATION user can able to view who are all donated 
 	 * contains:UserId,UserName,RequestId,RequestName,AmountDonated,Date

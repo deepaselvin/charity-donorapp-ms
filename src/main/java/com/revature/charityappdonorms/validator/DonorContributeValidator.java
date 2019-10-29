@@ -31,6 +31,13 @@ public class DonorContributeValidator {
 		}
 	}
 
+	public void countValidator(int requestId) throws ValidatorException {
+		if(requestId  == 0)
+		{
+			throw new ValidatorException(MessageConstant.INVALID_REQUESTID);
+		}
+	}
+
 
 
 }

@@ -3,22 +3,30 @@ package com.revature.charityappdonorms.service;
 import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.ArgumentMatchers.any;
 
+import org.junit.Before;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit4.SpringRunner;
 
+import com.revature.charity.repository.DonorRepository;
+import com.revature.charity.service.DonorService;
 import com.revature.charityappdonorms.exception.ServiceException;
 import com.revature.charityappdonorms.model.Donor;
 import com.revature.charityappdonorms.repository.DonorTransactionRepository;
 
-//@RunWith(SpringRunner.class)
+@RunWith(SpringRunner.class)
+@AutoConfigureMockMvc
 @SpringBootTest// package name is same it takes above configuration
 
-class DonorTransactionService {
+
+public class DonorTransactionService {
 
 
 	@InjectMocks
@@ -26,12 +34,11 @@ class DonorTransactionService {
 
 	@Mock
 	private DonorTransactionRepository donorRepoMock;
-
-   @BeforeEach
-  void setUp() throws Exception {
+	
+	@BeforeEach
+	public void setUp() throws Exception {
 		MockitoAnnotations.initMocks(this);
-	}
-			
+	}			
 	@Test
 	
 	public void testValidRegister() throws ServiceException {
@@ -42,7 +49,8 @@ class DonorTransactionService {
 		Mockito.when(donorRepoMock.save((Donor) any(Donor.class))).thenReturn(donor);
 		//Mockito.when(donorRepoMock.save(anyString(), anyString())).thenReturn(null);
 	//TODO::HOW TO CALL THE SERVICE CLASS HERE
-		//donorTransactionService.
+	
+	
 }
 
 	@Test
