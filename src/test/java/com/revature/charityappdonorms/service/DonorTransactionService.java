@@ -1,5 +1,5 @@
 package com.revature.charityappdonorms.service;
-
+/*
 import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.ArgumentMatchers.any;
 
@@ -15,11 +15,9 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import com.revature.charity.repository.DonorRepository;
-import com.revature.charity.service.DonorService;
 import com.revature.charityappdonorms.exception.ServiceException;
 import com.revature.charityappdonorms.model.Donor;
-import com.revature.charityappdonorms.repository.DonorTransactionRepository;
+
 
 @RunWith(SpringRunner.class)
 @AutoConfigureMockMvc
@@ -32,8 +30,8 @@ public class DonorTransactionService {
 	@InjectMocks
 	DonorTransactionService donorTransactionService;
 
-	@Mock
-	private DonorTransactionRepository donorRepoMock;
+	//@Mock
+//	private DonorTransactionRepository donorRepoMock;
 	
 	@BeforeEach
 	public void setUp() throws Exception {
@@ -58,4 +56,4 @@ public class DonorTransactionService {
 		fail("Not yet implemented");
 	}
 
-}
+}*/
