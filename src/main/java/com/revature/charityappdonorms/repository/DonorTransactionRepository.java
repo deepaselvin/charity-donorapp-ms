@@ -1,6 +1,9 @@
 package com.revature.charityappdonorms.repository;
 
+import java.util.List;
+
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import com.revature.charityappdonorms.model.Donor;
@@ -11,6 +14,9 @@ import com.revature.charityappdonorms.model.Donor;
  */
 @Repository
 public interface DonorTransactionRepository extends JpaRepository<Donor, Integer> {
+
+	@Query(" from Donor where  userId = :userId ")
+	List<Donor> findByDonor(int userId);
 
 	
 
