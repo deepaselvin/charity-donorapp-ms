@@ -60,6 +60,54 @@ public class DonorTransactionController {
 		}
 	}
 
+	/*
+	 * It includes transaction details so post mapping was used.
+	 * 
+	 * @RequestBody REQUEST ID was given as input it returns TOTAL AMOUNT
+	 */
+
+	@PostMapping("/TotalAmount")
+
+	@ApiOperation(value = "DonorTotalAmount API")
+	@ApiResponses(value = { @ApiResponse(code = 200, message = "Success", response = DonorDto.class),
+			@ApiResponse(code = 400, message = "Unable to show Total Amount ", response = Message.class) })
+
+	public ResponseEntity<?> totalAmount() {
+		try {
+			Long count=null;
+			count=donorTransactionService.donorTotalAmount();
+			return new ResponseEntity<>(count, HttpStatus.OK);
+		} catch (ServiceException e) {
+			LOGGER.error("Exception:", e);
+			Message message = new Message(e.getMessage());
+			return new ResponseEntity<>(message, HttpStatus.BAD_REQUEST);
+		}
+	}
+
+	/*
+	 * It includes transaction details so post mapping was used.
+	 * 
+	 * @RequestBody input was given as object it returns a response
+	 */
+
+	@GetMapping("/TotalAmountById")
+
+	@ApiOperation(value = "DonorTotalAmountById API")
+	@ApiResponses(value = { @ApiResponse(code = 200, message = "Success", response = DonorDto.class),
+			@ApiResponse(code = 400, message = "Unable to show Total Amount", response = Message.class) })
+
+		public ResponseEntity<?> totalAmountById(@RequestParam("requestId") int requestId) {
+				
+		try {	
+				Long count=null;
+				count=donorTransactionService.donorAmountById(requestId);
+				return new ResponseEntity<>(count, HttpStatus.OK);
+			} catch (ServiceException e) {
+				LOGGER.error("Exception:", e);
+				Message message = new Message(e.getMessage());
+				return new ResponseEntity<>(message, HttpStatus.BAD_REQUEST);
+			}
+		}
 	
 	/*
 	 * It includes transaction details so post mapping was used.

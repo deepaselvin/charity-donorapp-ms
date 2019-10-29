@@ -16,7 +16,7 @@ import com.revature.charityappdonorms.model.Donor;
 public interface DonorTransactionRepository extends JpaRepository<Donor, Integer> {
 
 	@Query(" from Donor where  userId = :userId ")
-	List<Donor> findByDonor(int userId);
+	List<Donor> findByDonorId(int userId);
 
 	
 	@Query(" select count(*) from Donor d where d.requestId = ?1")
@@ -28,5 +28,8 @@ public interface DonorTransactionRepository extends JpaRepository<Donor, Integer
 
 	@Query(" select sum(amount) from Donor d where d.requestId = ?1")
 	Long findAmountByRequestId(int requestId);
+
+
+
 
 }
