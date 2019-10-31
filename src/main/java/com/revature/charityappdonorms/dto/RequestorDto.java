@@ -10,6 +10,7 @@ public class RequestorDto {
 	 private Integer id;
 	    private int categoryId;
 	    private double fundNeeded;
+	    private double amount;
 	    private String status;
 	    private int requestedBy;
 	    private String requestedByName;
