@@ -171,6 +171,7 @@ public class DonorTransactionService {
         List<RequestorDto> listDto=new ArrayList<RequestorDto>();
         for (Donor donor : list) {
         	RequestorDto dto = new RequestorDto();
+        	
             dto.setId(donor.getUserId());
             dto.setCategoryId(donor.getRequestId());
             dto.setFundNeeded(donor.getAmount());
@@ -189,9 +190,9 @@ public class DonorTransactionService {
             listDto.add(dto);
         }       
 		
-		if (list.isEmpty()) {
-			throw new ServiceException(MessageConstant.MY_UNABLE_TO_LIST);
-		}
+//		if (list.isEmpty()) {
+//			throw new ServiceException(MessageConstant.MY_UNABLE_TO_LIST);
+//		}
 		return listDto;
 	}
 
@@ -228,9 +229,10 @@ public class DonorTransactionService {
             listDto.add(dto);
         }       
 		
-		if (list.isEmpty()) {
-			throw new ServiceException(MessageConstant.MY_UNABLE_TO_LIST);
-		}
+		/*
+		 * if (list.isEmpty()) { throw new
+		 * ServiceException(MessageConstant.MY_UNABLE_TO_LIST); }
+		 */
 		return listDto;
 	}	
 	

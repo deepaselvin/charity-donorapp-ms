@@ -2,10 +2,10 @@ spring:
  datasource:
    driver-class-name:  com.mysql.cj.jdbc.Driver
    url: jdbc:mysql://devdb.charityapp.in:3306/charityapp_donor_db
-   username: prod_user
-   password: prod_user
+   username: dev_user
+   password: dev_user
 flyway:
    driver-class-name: com.mysql.cj.jdbc.Driver
    url: jdbc:mysql://devdb.charityapp.in:3306/charityapp_donor_db
-   username: prod_user
-   password: prod_user
+   username: dev_user
+   password: dev_user
