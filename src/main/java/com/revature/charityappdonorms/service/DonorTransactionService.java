@@ -1,6 +1,7 @@
 package com.revature.charityappdonorms.service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.transaction.Transactional;
@@ -12,6 +13,8 @@ import org.springframework.stereotype.Service;
 
 import com.revature.charityappdonorms.controller.DonorTransactionController;
 import com.revature.charityappdonorms.dto.DonorDto;
+import com.revature.charityappdonorms.dto.RequestorDto;
+import com.revature.charityappdonorms.dto.UserDto;
 import com.revature.charityappdonorms.exception.ServiceException;
 import com.revature.charityappdonorms.exception.ValidatorException;
 import com.revature.charityappdonorms.model.Donor;
@@ -21,6 +24,8 @@ import com.revature.charityappdonorms.validator.DonorContributeValidator;
 
 @Service
 public class DonorTransactionService {
+	@Autowired
+	UserService userService;
 
 	@Autowired
 	DonorTransactionRepository donorTransactionRepository;
@@ -51,7 +56,10 @@ public class DonorTransactionService {
 				d.setUpdateDate(LocalDateTime.now());
 				// insert method
 				donorTransactionRepository.save(d);
-			} catch (ValidatorException e) {
+			
+			} 
+			catch (ValidatorException e)
+			{
 				
 				LOGGER.error("Exception:", e);
 			}
@@ -136,11 +144,6 @@ public class DonorTransactionService {
 	}
 	
 
-	
-	/*
-	 * LIST ALL  DONATION user can able to view who are all donated 
-	 * contains:UserId,UserName,RequestId,RequestName,AmountDonated,Date
-	 */
 
 	@Transactional
 	public List<Donor> allDonorTransList() throws ServiceException {
@@ -160,14 +163,75 @@ public class DonorTransactionService {
 	 */
 
 	@Transactional
-	public List<Donor> myDonorTransList(int userId) throws ServiceException {
+	public List<RequestorDto> myDonorTransList(int userId) throws ServiceException {
 		List<Donor> list = null;
 		list = donorTransactionRepository.findByDonorId(userId);
 
+        
+        List<RequestorDto> listDto=new ArrayList<RequestorDto>();
+        for (Donor donor : list) {
+        	RequestorDto dto = new RequestorDto();
+            dto.setId(donor.getUserId());
+            dto.setCategoryId(donor.getRequestId());
+            dto.setFundNeeded(donor.getAmount());
+           dto.setCreatedDate(donor.getCreateDate());
+           
+            
+            
+            UserDto user = userService.getUserId(donor.getUserId());
+            if(user != null) {
+            dto.setName(user.getName());}
+
+            RequestorDto donorObj = userService.getFund(dto.getCategoryId());
+            if(donorObj!= null) {
+            dto.setCategoryName(donorObj.getCategoryName());}
+            
+            listDto.add(dto);
+        }       
+		
 		if (list.isEmpty()) {
 			throw new ServiceException(MessageConstant.MY_UNABLE_TO_LIST);
 		}
-		return list;
+		return listDto;
 	}
+
+	
+	
+	/*
+	 * LIST ALL  DONATION user can able to view who are all donated 
+	 * contains:UserId,UserName,RequestId,RequestName,AmountDonated,Date
+	 */
+
+	public List<RequestorDto> findAll() throws ServiceException {
+       
+		List<Donor> list = donorTransactionRepository.findAll();
+        
+		 
+        List<RequestorDto> listDto=new ArrayList<RequestorDto>();
+        for (Donor donor : list) {
+        	RequestorDto dto = new RequestorDto();
+            dto.setId(donor.getUserId());
+            dto.setCategoryId(donor.getRequestId());
+            dto.setFundNeeded(donor.getAmount());
+           dto.setCreatedDate(donor.getCreateDate());
+           
+            
+            
+            UserDto user = userService.getUserId(donor.getUserId());
+            if(user != null) {
+            dto.setName(user.getName());}
+
+            RequestorDto donorObj = userService.getFund(dto.getCategoryId());
+            if(donorObj!= null) {
+            dto.setCategoryName(donorObj.getCategoryName());}
+            
+            listDto.add(dto);
+        }       
+		
+		if (list.isEmpty()) {
+			throw new ServiceException(MessageConstant.MY_UNABLE_TO_LIST);
+		}
+		return listDto;
+	}	
 	
 }

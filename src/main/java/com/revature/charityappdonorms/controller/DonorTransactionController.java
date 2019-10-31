@@ -17,8 +17,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.revature.charityappdonorms.dto.DonorDto;
 import com.revature.charityappdonorms.dto.Message;
+import com.revature.charityappdonorms.dto.RequestorDto;
 import com.revature.charityappdonorms.exception.ServiceException;
-import com.revature.charityappdonorms.model.Donor;
 import com.revature.charityappdonorms.service.DonorTransactionService;
 import com.revature.charityappdonorms.util.MessageConstant;
 
@@ -141,10 +141,10 @@ public class DonorTransactionController {
 	@GetMapping("/AllDonation")
 	
 	@ResponseStatus(code = HttpStatus.OK)
-	public List<Donor> viewDonation() throws ServiceException  {
-		List<Donor> donorObj = null;
+	public List<RequestorDto> viewDonation() throws ServiceException  {
+		List<RequestorDto> donorObj = null;
 		try {
-			donorObj = donorTransactionService.allDonorTransList();
+			donorObj = donorTransactionService.findAll();
 			System.out.println("Alllist"+donorObj);
 			return donorObj;
 		} catch (ServiceException e) {
@@ -164,7 +164,7 @@ public class DonorTransactionController {
 	@ResponseStatus(code = HttpStatus.OK)
     public ResponseEntity<?> subject(@RequestParam("userId") int userId){
 
-		List<Donor> donorObj;
+		List<RequestorDto> donorObj;
 		try {
 			donorObj = donorTransactionService.myDonorTransList(userId);
 			System.out.println("list"+donorObj);

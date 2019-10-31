@@ -10,6 +10,7 @@ public class MessageConstant {
 	  }
 
 	public static final String UNABLE_TO_TRANSACTION = "Invalid Request id/ Amount";
+	public static final String UNABLE_TO_LIST_NAME="Unable to show the Contributed List";
 	public static final String UNABLE_TO_TOTAL_AMOUNT_BY_ID="unable to Show Toatl amount ";
 	public static final String UNABLE_TO_TOTAL_AMOUNT="unable to Show Toatl amount by request id ";
 	public static final String	ALL_UNABLE_TO_LIST="UNable To Load List";
