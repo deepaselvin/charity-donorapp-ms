@@ -156,6 +156,47 @@ public class DonorTransactionService {
 		return list;
 	}
 
+	/*
+	 * LIST DONOR CONTRIBUTION BY REQUEST ID user can able to view their donation list
+	 * contains:UserId,UserName,RequestId,RequestName,AmountDonated,Date
+	 */
+
+	@Transactional
+	public List<RequestorDto> donorTranByRequestId(int requestId) throws ServiceException {
+		List<Donor> list = null;
+		list = donorTransactionRepository.findDonorByRequestId(requestId);
+
+        
+        List<RequestorDto> listDto=new ArrayList<RequestorDto>();
+        for (Donor donor : list) {
+        	RequestorDto dto = new RequestorDto();
+        	
+            dto.setId(donor.getUserId());
+            dto.setCategoryId(donor.getRequestId());
+            dto.setAmount(donor.getAmount());
+            dto.setCreatedDate(donor.getCreateDate());
+           
+            
+            
+            UserDto user = userService.getUserId(donor.getUserId());
+            if(user != null) {
+            dto.setName(user.getName());}
+
+            RequestorDto donorObj = userService.getFund(dto.getCategoryId());
+            if(donorObj!= null) {
+            dto.setCategoryName(donorObj.getCategoryName());}
+            dto.setFundNeeded(donorObj.getFundNeeded());
+            listDto.add(dto);
+        }       
+		
+//		if (list.isEmpty()) {
+//			throw new ServiceException(MessageConstant.MY_UNABLE_TO_LIST);
+//		}
+		return listDto;
+	}
+
+
+	
 
 	/*
 	 * LIST MY DONATION user can able to view their donation list
@@ -171,10 +212,11 @@ public class DonorTransactionService {
         List<RequestorDto> listDto=new ArrayList<RequestorDto>();
         for (Donor donor : list) {
         	RequestorDto dto = new RequestorDto();
+        	
             dto.setId(donor.getUserId());
             dto.setCategoryId(donor.getRequestId());
-            dto.setFundNeeded(donor.getAmount());
-           dto.setCreatedDate(donor.getCreateDate());
+            dto.setAmount(donor.getAmount());
+            dto.setCreatedDate(donor.getCreateDate());
            
             
             
@@ -185,13 +227,13 @@ public class DonorTransactionService {
             RequestorDto donorObj = userService.getFund(dto.getCategoryId());
             if(donorObj!= null) {
             dto.setCategoryName(donorObj.getCategoryName());}
-            
+            dto.setFundNeeded(donorObj.getFundNeeded());
             listDto.add(dto);
         }       
 		
-		if (list.isEmpty()) {
-			throw new ServiceException(MessageConstant.MY_UNABLE_TO_LIST);
-		}
+//		if (list.isEmpty()) {
+//			throw new ServiceException(MessageConstant.MY_UNABLE_TO_LIST);
+//		}
 		return listDto;
 	}
 
@@ -212,7 +254,7 @@ public class DonorTransactionService {
         	RequestorDto dto = new RequestorDto();
             dto.setId(donor.getUserId());
             dto.setCategoryId(donor.getRequestId());
-            dto.setFundNeeded(donor.getAmount());
+            dto.setAmount(donor.getAmount());
            dto.setCreatedDate(donor.getCreateDate());
            
             
@@ -223,14 +265,17 @@ public class DonorTransactionService {
 
             RequestorDto donorObj = userService.getFund(dto.getCategoryId());
             if(donorObj!= null) {
-            dto.setCategoryName(donorObj.getCategoryName());}
+            dto.setCategoryName(donorObj.getCategoryName());
+            dto.setFundNeeded(donorObj.getFundNeeded());
+            }
             
             listDto.add(dto);
         }       
 		
-		if (list.isEmpty()) {
-			throw new ServiceException(MessageConstant.MY_UNABLE_TO_LIST);
-		}
+		/*
+		 * if (list.isEmpty()) { throw new
+		 * ServiceException(MessageConstant.MY_UNABLE_TO_LIST); }
+		 */
 		return listDto;
 	}	
 	
