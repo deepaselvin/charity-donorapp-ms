@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import com.revature.charityappdonorms.controller.DonorTransactionController;
 import com.revature.charityappdonorms.dto.DonorDto;
+import com.revature.charityappdonorms.dto.MailContributeDto;
 import com.revature.charityappdonorms.dto.RequestorDto;
 import com.revature.charityappdonorms.dto.UserDto;
 import com.revature.charityappdonorms.exception.ServiceException;
@@ -27,6 +28,9 @@ public class DonorTransactionService {
 	@Autowired
 	UserService userService;
 
+	@Autowired
+	MailService mailservice;
+	
 	@Autowired
 	DonorTransactionRepository donorTransactionRepository;
 
@@ -43,11 +47,11 @@ public class DonorTransactionService {
 
 	@Transactional
 	public void donorContribute(DonorDto donor) throws ServiceException {
-
-
+		
+		
 			try {
 				donorValidator.contributeValidator(donor);
-
+			
 				Donor d = new Donor();
 				d.setRequestId(donor.getRequestId());
 				d.setUserId(donor.getUserId());
@@ -55,7 +59,23 @@ public class DonorTransactionService {
 				d.setCreateDate(LocalDateTime.now());
 				d.setUpdateDate(LocalDateTime.now());
 				// insert method
-				donorTransactionRepository.save(d);
+			donorTransactionRepository.save(d);
+			
+				
+				
+				MailContributeDto mail=new MailContributeDto();
+				UserDto user =userService.getUserId(donor.getUserId());
+				RequestorDto requestor=userService.getFund(donor.getRequestId());
+				if(user !=null)
+				{
+				mail.setEmail(user.getEmail());	
+				mail.setAmount(donor.getAmount());
+				}
+				if(requestor != null)
+				{
+				mail.setCategoryName(donor.getCategoryName());
+				}
+				mailservice.sendContributeMail(mail);
 			
 			} 
 			catch (ValidatorException e)
@@ -64,9 +84,13 @@ public class DonorTransactionService {
 				LOGGER.error("Exception:", e);
 			}
 			 catch (Exception e) {
+					LOGGER.error("Exception:", e);
 					
 					throw new ServiceException(MessageConstant.UNABLE_TO_TRANSACTION);
-			 }			
+			 }
+			
+			
+			
 	}
 
 	/*
