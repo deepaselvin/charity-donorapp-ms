@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import com.revature.charityappdonorms.dto.MailContributeDto;
 import com.revature.charityappdonorms.dto.MailDto;
 
 @Service
@@ -20,4 +21,12 @@ public class MailService {
 		ResponseEntity<Void> postForEntity = restTemplate.postForEntity(apiUrl+"/mail/registeruser", mailDTO, Void.class);
 		System.out.println(postForEntity);
 	}
+	
+	void sendContributeMail(final MailContributeDto mailDTO)
+	{
+		String apiUrl = "https://charity-notification.herokuapp.com";
+		ResponseEntity<Void> postForEntity = restTemplate.postForEntity(apiUrl+"/mail/donationmail", mailDTO, Void.class);
+		System.out.println(postForEntity);
+	}
+
 }
