@@ -1,14 +1,14 @@
 package com.revature.charityappdonorms.dto;
 
 public class Message {
-	private String message;
+	private String messageinfo;
 
 	public String getMessage() {
-		return message;
+		return messageinfo;
 	}
 
 	public void setMessage(String message) {
-		this.message = message;
+		this.messageinfo = message;
 	}
 
 	public Message(String message) {

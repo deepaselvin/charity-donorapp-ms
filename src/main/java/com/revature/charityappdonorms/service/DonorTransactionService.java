@@ -11,7 +11,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.revature.charityappdonorms.controller.DonorTransactionController;
 import com.revature.charityappdonorms.dto.DonorDto;
 import com.revature.charityappdonorms.dto.MailContributeDto;
 import com.revature.charityappdonorms.dto.RequestorDto;
@@ -37,10 +36,10 @@ public class DonorTransactionService {
 	@Autowired
 	DonorContributeValidator donorValidator;
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(DonorTransactionController.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(DonorTransactionService.class);
 
 	
-	/*
+	/**
 	 * insert TRANSACATIONAL DETAILS USERID from userService REQUESTID from
 	 * RequestorService
 	 */
@@ -59,9 +58,7 @@ public class DonorTransactionService {
 				d.setCreateDate(LocalDateTime.now());
 				d.setUpdateDate(LocalDateTime.now());
 				// insert method
-			donorTransactionRepository.save(d);
-			
-				
+			donorTransactionRepository.save(d);		
 				
 				MailContributeDto mail=new MailContributeDto();
 				UserDto user =userService.getUserId(donor.getUserId());
@@ -69,10 +66,11 @@ public class DonorTransactionService {
 				if(user !=null)
 				{
 				mail.setEmail(user.getEmail());	
-				mail.setAmount(donor.getAmount());
+			
 				}
 				if(requestor != null)
 				{
+					mail.setAmount(donor.getAmount());
 				mail.setCategoryName(donor.getCategoryName());
 				}
 				mailservice.sendContributeMail(mail);
@@ -80,24 +78,22 @@ public class DonorTransactionService {
 			} 
 			catch (ValidatorException e)
 			{
-				
-				LOGGER.error("Exception:", e);
+				LOGGER.error("Validator Exception:", e);	
+				throw new ServiceException(MessageConstant.INVALID_USERID_REQUESTID_AMOUNT);
 			}
 			 catch (Exception e) {
-					LOGGER.error("Exception:", e);
-					
+			
 					throw new ServiceException(MessageConstant.UNABLE_TO_TRANSACTION);
 			 }
 			
 			
-			
 	}
 
-	/*
+	/**
 	 * DONOR COUNT [how are all donated to a request]
 	 * input was given as REQUESTID
 	 * it returns the count of donor's
-	 */
+	 
 
 	@Transactional
 	public Long donorCountService(int requestId) throws ServiceException {
@@ -122,9 +118,9 @@ public class DonorTransactionService {
 			
 			return findByRequestid;
 	}
-	
+	*/
 
-	/*
+	/**
 	 * DONOR TOTAL AMOUNT [how much amount all donated by all donor's]
 	 * it returns the total amount contributed by donor's
 	 */
@@ -134,18 +130,17 @@ public class DonorTransactionService {
 
 		Long findAmount=null;
 			try {
-				// insert method
 				findAmount = donorTransactionRepository.findTotalAmount();
 			} 
 			 catch (Exception e) {
-				 LOGGER.error("Exception:", e);
+				
 				throw new ServiceException(MessageConstant.UNABLE_TO_TOTAL_AMOUNT);
 			 }			
 			return findAmount;
 	}
 	
-	/*
-	 * DONOR AOUNT BY REQUESTID [how much amount was contributed to a particular request id]
+	/**
+	 * DONOR AMOUNT BY REQUESTID [how much amount was contributed to a particular request id]
 	 * input was given as REQUESTID
 	 * it returns the amount donated to a particular of request Id
 	 */
@@ -155,8 +150,7 @@ public class DonorTransactionService {
 
 		Long findAmountByRequestid=null;
 			try {
-				
-				// insert method
+			
 			 findAmountByRequestid = donorTransactionRepository.findAmountByRequestId(requestId);	
 			} 
 			 catch (Exception e) {
@@ -166,32 +160,36 @@ public class DonorTransactionService {
 			 }			
 			return findAmountByRequestid;
 	}
-	
+	/**
+	 * allDonorTransList[it returns the list of donation done by donor's]
+	 * if there is no transaction done a empty array list will be returned
+	 * */
 
 
 	@Transactional
-	public List<Donor> allDonorTransList() throws ServiceException {
+	public List<Donor> allDonorTransList() {
 		List<Donor> list = null;
-		list = donorTransactionRepository.findAll();
-
-		if (list.isEmpty()) {
-			throw new ServiceException(MessageConstant.ALL_UNABLE_TO_LIST);
+		try {
+			list = donorTransactionRepository.findAll();
+		} catch (Exception e) {
+			LOGGER.error("Exception:", e);
 		}
 		return list;
 	}
 
-	/*
+	/**
 	 * LIST DONOR CONTRIBUTION BY REQUEST ID user can able to view their donation list
-	 * contains:UserId,UserName,RequestId,RequestName,AmountDonated,Date
+	 * returns:UserId,UserName,RequestId,RequestName,AmountDonated,Date
+	 * userName was taken from userMicroservice
+	 * categoryNamwe was taken from requestorMicroservice
 	 */
 
 	@Transactional
-	public List<RequestorDto> donorTranByRequestId(int requestId) throws ServiceException {
+	public List<RequestorDto> donorTranByRequestId(int requestId)  throws ServiceException{
 		List<Donor> list = null;
 		list = donorTransactionRepository.findDonorByRequestId(requestId);
-
         
-        List<RequestorDto> listDto=new ArrayList<RequestorDto>();
+        List<RequestorDto> listDto=new ArrayList<>();
         for (Donor donor : list) {
         	RequestorDto dto = new RequestorDto();
         	
@@ -199,89 +197,81 @@ public class DonorTransactionService {
             dto.setCategoryId(donor.getRequestId());
             dto.setAmount(donor.getAmount());
             dto.setCreatedDate(donor.getCreateDate());
-           
-            
-            
+                     
             UserDto user = userService.getUserId(donor.getUserId());
             if(user != null) {
             dto.setName(user.getName());}
 
             RequestorDto donorObj = userService.getFund(dto.getCategoryId());
             if(donorObj!= null) {
-            dto.setCategoryName(donorObj.getCategoryName());}
-            dto.setFundNeeded(donorObj.getFundNeeded());
+            dto.setCategoryName(donorObj.getCategoryName());
+            dto.setFundNeeded(donorObj.getFundNeeded());}
             listDto.add(dto);
         }       
-		
-//		if (list.isEmpty()) {
-//			throw new ServiceException(MessageConstant.MY_UNABLE_TO_LIST);
-//		}
 		return listDto;
 	}
-
-
 	
 
-	/*
+	/**
 	 * LIST MY DONATION user can able to view their donation list
 	 * contains:UserId,UserName,RequestId,RequestName,AmountDonated,Date
+	 * userName was taken from userMicroservice
+	 * categoryNamwe was taken from requestorMicroservice
 	 */
 
 	@Transactional
-	public List<RequestorDto> myDonorTransList(int userId) throws ServiceException {
+	public List<RequestorDto> myDonorTransList(int userId)   throws ServiceException{
 		List<Donor> list = null;
 		list = donorTransactionRepository.findByDonorId(userId);
 
         
-        List<RequestorDto> listDto=new ArrayList<RequestorDto>();
+        List<RequestorDto> listDto=new ArrayList<>();
         for (Donor donor : list) {
         	RequestorDto dto = new RequestorDto();
         	
             dto.setId(donor.getUserId());
             dto.setCategoryId(donor.getRequestId());
             dto.setAmount(donor.getAmount());
-            dto.setCreatedDate(donor.getCreateDate());
-           
-            
+            dto.setCreatedDate(donor.getCreateDate());        
             
             UserDto user = userService.getUserId(donor.getUserId());
-            if(user != null) {
-            dto.setName(user.getName());}
+            if(user != null) 
+            {
+            dto.setName(user.getName());
+            }
 
             RequestorDto donorObj = userService.getFund(dto.getCategoryId());
-            if(donorObj!= null) {
-            dto.setCategoryName(donorObj.getCategoryName());}
-            dto.setFundNeeded(donorObj.getFundNeeded());
+            if(donorObj!= null) 
+            {
+            dto.setCategoryName(donorObj.getCategoryName());
+            }
+           
             listDto.add(dto);
         }       
 		
-//		if (list.isEmpty()) {
-//			throw new ServiceException(MessageConstant.MY_UNABLE_TO_LIST);
-//		}
+
 		return listDto;
 	}
 
 	
 	
-	/*
+	/**
 	 * LIST ALL  DONATION user can able to view who are all donated 
 	 * contains:UserId,UserName,RequestId,RequestName,AmountDonated,Date
 	 */
 
-	public List<RequestorDto> findAll() throws ServiceException {
+	public List<RequestorDto> findAll()  throws ServiceException {
        
 		List<Donor> list = donorTransactionRepository.findAll();
         
 		 
-        List<RequestorDto> listDto=new ArrayList<RequestorDto>();
+        List<RequestorDto> listDto=new ArrayList<>();
         for (Donor donor : list) {
         	RequestorDto dto = new RequestorDto();
             dto.setId(donor.getUserId());
             dto.setCategoryId(donor.getRequestId());
             dto.setAmount(donor.getAmount());
-           dto.setCreatedDate(donor.getCreateDate());
-           
-            
+           dto.setCreatedDate(donor.getCreateDate());                     
             
             UserDto user = userService.getUserId(donor.getUserId());
             if(user != null) {
@@ -296,10 +286,7 @@ public class DonorTransactionService {
             listDto.add(dto);
         }       
 		
-		/*
-		 * if (list.isEmpty()) { throw new
-		 * ServiceException(MessageConstant.MY_UNABLE_TO_LIST); }
-		 */
+		
 		return listDto;
 	}	
 	

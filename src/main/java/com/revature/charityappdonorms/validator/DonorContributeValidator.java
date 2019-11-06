@@ -19,15 +19,15 @@ public class DonorContributeValidator {
 
 		if(userId == 0)
 		{
-			throw new ValidatorException(MessageConstant.INVALID_USERID);
+			throw new ValidatorException(MessageConstant.INVALID_USERID_REQUESTID_AMOUNT);
 		}
 		if(requestId  == 0)
 		{
-			throw new ValidatorException(MessageConstant.INVALID_REQUESTID);
+			throw new ValidatorException(MessageConstant.INVALID_USERID_REQUESTID_AMOUNT);
 		}
 		if(amount == 0)
 		{
-			throw new ValidatorException(MessageConstant.INVALID_AMOUNT);
+			throw new ValidatorException(MessageConstant.INVALID_USERID_REQUESTID_AMOUNT);
 		}
 	}
 
