@@ -57,8 +57,8 @@ public class DonorTransactionService {
 				d.setAmount(donor.getAmount());
 				d.setCreateDate(LocalDateTime.now());
 				d.setUpdateDate(LocalDateTime.now());
-				// insert method
-			donorTransactionRepository.save(d);		
+
+			    donorTransactionRepository.save(d);		
 				
 				MailContributeDto mail=new MailContributeDto();
 				UserDto user =userService.getUserId(donor.getUserId());
@@ -70,8 +70,8 @@ public class DonorTransactionService {
 				}
 				if(requestor != null)
 				{
-					mail.setAmount(donor.getAmount());
-				mail.setCategoryName(donor.getCategoryName());
+				mail.setAmount(donor.getAmount());
+				mail.setCategoryName(requestor.getCategoryName());
 				}
 				mailservice.sendContributeMail(mail);
 			
@@ -171,6 +171,7 @@ public class DonorTransactionService {
 		List<Donor> list = null;
 		try {
 			list = donorTransactionRepository.findAll();
+			System.out.println(list);
 		} catch (Exception e) {
 			LOGGER.error("Exception:", e);
 		}
@@ -188,6 +189,7 @@ public class DonorTransactionService {
 	public List<RequestorDto> donorTranByRequestId(int requestId)  throws ServiceException{
 		List<Donor> list = null;
 		list = donorTransactionRepository.findDonorByRequestId(requestId);
+		System.out.println(list);
         
         List<RequestorDto> listDto=new ArrayList<>();
         for (Donor donor : list) {
@@ -223,6 +225,7 @@ public class DonorTransactionService {
 	public List<RequestorDto> myDonorTransList(int userId)   throws ServiceException{
 		List<Donor> list = null;
 		list = donorTransactionRepository.findByDonorId(userId);
+		System.out.println(list);
 
         
         List<RequestorDto> listDto=new ArrayList<>();
@@ -263,6 +266,7 @@ public class DonorTransactionService {
 	public List<RequestorDto> findAll()  throws ServiceException {
        
 		List<Donor> list = donorTransactionRepository.findAll();
+		System.out.println(list);
         
 		 
         List<RequestorDto> listDto=new ArrayList<>();
